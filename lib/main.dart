@@ -63,17 +63,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hospital'),
-        leading: Builder(
-          builder: (BuildContext context) {
-            return IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openDrawer();
-              },
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-            );
-          },
+        backgroundColor: Colors.blue.shade700,
+        title: const Text(
+          'Hospital',
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
       body: const Center(
@@ -82,6 +77,66 @@ class _MyHomePageState extends State<MyHomePage> {
           style: TextStyle(fontSize: 24),
         ),
       ),
+      drawer: const NavigationDrawer(),
     );
   }
+}
+
+class NavigationDrawer extends StatelessWidget {
+  const NavigationDrawer({key}) : super(key: key);
+  @override
+  Widget build(context) => Drawer(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              buildHeader(context),
+              buildMenuItems(context),
+            ],
+          ),
+        ),
+      );
+  Widget buildHeader(context) => Container(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top,
+        ),
+      );
+  Widget buildMenuItems(context) => Column(children: [
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Home'),
+          onTap: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const MyHomePage(),
+              ),
+            );
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Categoria'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Pacientes/Doctores'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Reserva'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Ficha'),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: const Icon(Icons.home),
+          title: const Text('Reporte'),
+          onTap: () {},
+        ),
+      ]);
 }
