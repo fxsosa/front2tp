@@ -52,6 +52,7 @@ List<String> tableCreationQueries = [
   ''',
 ];
 
+// inicializa la db
 class db {
   static Future<Database> _openDB() async {
     return openDatabase(
