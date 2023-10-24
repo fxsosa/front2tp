@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front2tp/page/categoria_page.dart';
 import 'package:front2tp/page/ficha_page.dart';
-import 'package:front2tp/page/pacientesDoctores_page.dart';
+import 'package:front2tp/page/Persona_page.dart';
 import 'package:front2tp/page/reserva_page.dart';
 
 class NavigationDrawerCustom extends StatelessWidget {
@@ -43,7 +43,7 @@ class NavigationDrawerCustom extends StatelessWidget {
             Navigator.pop(context);
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const PacientesDoctoresPage(),
+                builder: (context) => const PersonaPage(),
               ),
             );
           },

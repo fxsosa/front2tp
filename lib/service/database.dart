@@ -20,7 +20,7 @@ List<String> tableCreationQueries = [
     telefono TEXT,
     email TEXT,
     cedula TEXT NOT NULL,
-    flag_es_doctor BOOLEAN NOT NULL
+    flagEsDoctor BOOLEAN NOT NULL
   );
   ''',
   '''
@@ -98,45 +98,45 @@ class db {
       {
         'table': 'Personas',
         'values': {
-          'nombre': 'Dr. Juan Pérez',
+          'nombre': 'Juan',
           'apellido': 'López',
           'telefono': '123-456-7890',
           'email': 'juan.perez@example.com',
           'cedula': '111111111',
-          'flag_es_doctor': 1,
+          'flagEsDoctor': 1,
         },
       },
       {
         'table': 'Personas',
         'values': {
-          'nombre': 'Dra. María González',
+          'nombre': 'María',
           'apellido': 'Martínez',
           'telefono': '987-654-3210',
           'email': 'maria.gonzalez@example.com',
           'cedula': '222222222',
-          'flag_es_doctor': 1,
+          'flagEsDoctor': 1,
         },
       },
       {
         'table': 'Personas',
         'values': {
-          'nombre': 'Paciente',
-          'apellido': 'Ana Rodríguez',
+          'nombre': 'Ana',
+          'apellido': 'Rodríguez',
           'telefono': '555-555-5555',
           'email': 'ana.rodriguez@example.com',
           'cedula': '333333333',
-          'flag_es_doctor': 0,
+          'flagEsDoctor': 0,
         },
       },
       {
         'table': 'Personas',
         'values': {
-          'nombre': 'Paciente',
-          'apellido': 'Luis Torres',
+          'nombre': 'Luis',
+          'apellido': 'Torres',
           'telefono': '666-666-6666',
           'email': 'luis.torres@example.com',
           'cedula': '444444444',
-          'flag_es_doctor': 0,
+          'flagEsDoctor': 0,
         },
       },
       {
@@ -210,7 +210,16 @@ class db {
 
   static Future<int> insertPersona(Persona persona) async {
     Database db = await _openDB();
-    return db.insert("Persona", persona.toMap());
+    return db.rawInsert(
+        'INSERT INTO Personas (nombre, apellido, telefono, email, cedula, flagEsDoctor) VALUES(?, ?, ?, ?, ?, ?)',
+        [
+          persona.nombre,
+          persona.apellido,
+          persona.telefono,
+          persona.email,
+          persona.cedula,
+          persona.flagEsDoctor
+        ]);
   }
 
   static Future<int> insertReserva(Reserva reserva) async {
@@ -232,7 +241,7 @@ class db {
 
   static Future<int> deletePersona(Persona persona) async {
     Database db = await _openDB();
-    return db.delete("Persona",
+    return db.delete("Personas",
         where: "idPersona = ?", whereArgs: [persona.idPersona]);
   }
 
@@ -257,7 +266,7 @@ class db {
 
   static Future<int> updatePersona(Persona persona) async {
     Database db = await _openDB();
-    return db.update("Persona", persona.toMap(),
+    return db.update("Personas", persona.toMap(),
         where: "idPersona = ?", whereArgs: [persona.idPersona]);
   }
 
@@ -293,7 +302,7 @@ class db {
     int idPersona = persona.idPersona;
 
     List<Map<String, dynamic>> result = await db
-        .rawQuery('SELECT * FROM Persona WHERE idPersona=?', [idPersona]);
+        .rawQuery('SELECT * FROM Personas WHERE idPersona=?', [idPersona]);
 
     if (result.isNotEmpty) {
       return Categoria.fromMap(result.first);
