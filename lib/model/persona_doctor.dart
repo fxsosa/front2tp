@@ -2,8 +2,8 @@ class Persona {
   int idPersona;
   String nombre;
   String apellido;
-  String? telefono;
-  String? email;
+  String telefono;
+  String email;
   String cedula;
   bool flagEsDoctor;
 
@@ -11,8 +11,8 @@ class Persona {
     required this.idPersona,
     required this.nombre,
     required this.apellido,
-    this.telefono,
-    this.email,
+    required this.telefono,
+    required this.email,
     required this.cedula,
     required this.flagEsDoctor,
   });
@@ -26,7 +26,7 @@ class Persona {
       email: map['email'],
       cedula: map['cedula'],
       flagEsDoctor:
-          map['flag_es_doctor'] == 1, // Convierte el valor booleano a entero
+          map['flagEsDoctor'] == 1, // Convierte el valor booleano a entero
     );
   }
 
@@ -38,8 +38,18 @@ class Persona {
       'telefono': telefono,
       'email': email,
       'cedula': cedula,
-      'flag_es_doctor':
+      'flagEsDoctor':
           flagEsDoctor ? 1 : 0, // Convierte el valor booleano a entero
     };
+  }
+
+  @override
+  String toString() {
+    return '$nombre $apellido';
+  }
+
+  String descripcionPersona() {
+    String profesion = flagEsDoctor ? 'Doctor' : 'Paciente';
+    return 'Rol: $profesion \nTel: $telefono \nemail: $email \nCI: $cedula';
   }
 }

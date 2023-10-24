@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:front2tp/page/categoria_page.dart';
 import 'package:front2tp/page/editar_categoria.dart';
+import 'package:front2tp/page/editar_persona.dart';
 import 'package:front2tp/page/home_page.dart';
+import 'package:front2tp/page/Persona_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +22,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => const MyHomePage(),
         '/categoria': (context) => const CategoriaPage(),
         '/editarCategoria': (context) => EditarCategoria(),
+        '/persona': (context) => const PersonaPage(),
+        '/editarPersona': (context) => EditarPersona(),
       },
     );
   }
