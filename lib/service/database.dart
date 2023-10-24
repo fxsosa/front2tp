@@ -222,16 +222,6 @@ class db {
         ]);
   }
 
-  static Future<int> insertReserva(Reserva reserva) async {
-    Database db = await _openDB();
-    return db.insert("Reserva", reserva.toMap());
-  }
-
-  static Future<int> insertFicha(FichaClinica ficha) async {
-    Database db = await _openDB();
-    return db.insert("FichasClinica", ficha.toMap());
-  }
-
   // deletes
   static Future<int> deleteCategoria(Categoria categoria) async {
     Database db = await _openDB();
@@ -245,18 +235,6 @@ class db {
         where: "idPersona = ?", whereArgs: [persona.idPersona]);
   }
 
-  static Future<int> deleteReserva(Reserva reserva) async {
-    Database db = await _openDB();
-    return db.delete("Reserva",
-        where: "idReserva = ?", whereArgs: [reserva.idReserva]);
-  }
-
-  static Future<int> deleteFicha(FichaClinica ficha) async {
-    Database db = await _openDB();
-    return db.delete("FichasClinicas",
-        where: "idFicha = ?", whereArgs: [ficha.idFicha]);
-  }
-
   //update
   static Future<int> updateCategoria(Categoria categoria) async {
     Database db = await _openDB();
@@ -268,18 +246,6 @@ class db {
     Database db = await _openDB();
     return db.update("Personas", persona.toMap(),
         where: "idPersona = ?", whereArgs: [persona.idPersona]);
-  }
-
-  static Future<int> updateReserva(Reserva reserva) async {
-    Database db = await _openDB();
-    return db.update("Reserva", reserva.toMap(),
-        where: "idReserva = ?", whereArgs: [reserva.idReserva]);
-  }
-
-  static Future<int> updateFicha(FichaClinica ficha) async {
-    Database db = await _openDB();
-    return db.update("FichasClinicas", ficha.toMap(),
-        where: "idFicha = ?", whereArgs: [ficha.idFicha]);
   }
 
   // getOneByIdCategoria
@@ -308,34 +274,6 @@ class db {
       return Categoria.fromMap(result.first);
     } else {
       throw Exception('Persona no encontrada');
-    }
-  }
-
-  static Future<Categoria> getOneByIdReserva(Reserva reserva) async {
-    Database db = await _openDB();
-    int idReserva = reserva.idReserva;
-
-    List<Map<String, dynamic>> result = await db
-        .rawQuery('SELECT * FROM Reserva WHERE idReserva=?', [idReserva]);
-
-    if (result.isNotEmpty) {
-      return Categoria.fromMap(result.first);
-    } else {
-      throw Exception('Reserva no encontrada');
-    }
-  }
-
-  static Future<Categoria> getOneByIdFicha(FichaClinica ficha) async {
-    Database db = await _openDB();
-    int idFicha = ficha.idFicha;
-
-    List<Map<String, dynamic>> result = await db
-        .rawQuery('SELECT * FROM FichasClinicas WHERE idFicha=?', [idFicha]);
-
-    if (result.isNotEmpty) {
-      return Categoria.fromMap(result.first);
-    } else {
-      throw Exception('Ficha no encontrada');
     }
   }
 
@@ -370,50 +308,6 @@ class db {
         cedula: personasMap[i]['cedula'],
         flagEsDoctor: personasMap[i]['flagEsDoctor'] ==
             1, // Convierte 1 a true y 0 a false
-      ),
-    );
-  }
-
-  static Future<List<Reserva>> getAllReservas() async {
-    Database db = await _openDB();
-
-    // Realiza una consulta para obtener todas las reservas
-    final List<Map<String, dynamic>> reservasMap = await db.query("Reservas");
-
-    // Mapea los resultados en objetos Reserva
-    return List.generate(
-      reservasMap.length,
-      (i) => Reserva(
-        idReserva: reservasMap[i]['idReserva'],
-        idPaciente: reservasMap[i]['idPaciente'],
-        idDoctor: reservasMap[i]['idDoctor'],
-        fecha: reservasMap[i]['fecha'],
-        horarioInicio: reservasMap[i]['horarioInicio'],
-        horarioFin: reservasMap[i]['horarioFin'],
-        cancelado:
-            reservasMap[i]['cancelado'] == 1, // Convierte 1 a true y 0 a false
-      ),
-    );
-  }
-
-  static Future<List<FichaClinica>> getAllFichasClinicas() async {
-    Database db = await _openDB();
-
-    // Realiza una consulta para obtener todas las fichas clínicas
-    final List<Map<String, dynamic>> fichasClinicasMap =
-        await db.query("FichasClinicas");
-
-    // Mapea los resultados en objetos FichaClinica
-    return List.generate(
-      fichasClinicasMap.length,
-      (i) => FichaClinica(
-        idFicha: fichasClinicasMap[i]['idFicha'],
-        idPaciente: fichasClinicasMap[i]['idPaciente'],
-        idDoctor: fichasClinicasMap[i]['idDoctor'],
-        fecha: fichasClinicasMap[i]['fecha'],
-        motivoConsulta: fichasClinicasMap[i]['motivoConsulta'],
-        diagnostico: fichasClinicasMap[i]['diagnostico'],
-        idCategoria: fichasClinicasMap[i]['idCategoria'],
       ),
     );
   }

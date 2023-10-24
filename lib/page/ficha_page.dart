@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front2tp/nav_draw.dart';
 
 class FichaPage extends StatefulWidget {
   const FichaPage({super.key});

@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:front2tp/model/persona_doctor.dart';
 import 'package:front2tp/service/database.dart';
