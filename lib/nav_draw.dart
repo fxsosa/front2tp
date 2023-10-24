@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:front2tp/page/categoria_page.dart';
 import 'package:front2tp/page/ficha_page.dart';
 import 'package:front2tp/page/pacientesDoctores_page.dart';
-import 'package:front2tp/page/home_page.dart';
 import 'package:front2tp/page/reserva_page.dart';
 
 class NavigationDrawerCustom extends StatelessWidget {
@@ -25,18 +24,6 @@ class NavigationDrawerCustom extends StatelessWidget {
         ),
       );
   Widget buildMenuItems(context) => Column(children: [
-        ListTile(
-          leading: const Icon(Icons.home),
-          title: const Text('Home'),
-          onTap: () {
-            Navigator.pop(context);
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const MyHomePage(),
-              ),
-            );
-          },
-        ),
         ListTile(
           leading: const Icon(Icons.home),
           title: const Text('Categoria'),
