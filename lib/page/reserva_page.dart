@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front2tp/nav_draw.dart';
 
 class ReservaPage extends StatefulWidget {
   const ReservaPage({super.key});
@@ -10,13 +9,13 @@ class ReservaPage extends StatefulWidget {
 }
 
 class _ReservaPageState extends State<ReservaPage> {
+  @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reservas'),
         backgroundColor: Colors.purple,
       ),
-      drawer: const NavigationDrawerCustom(),
     );
   }
 }

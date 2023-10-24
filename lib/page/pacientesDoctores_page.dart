@@ -10,13 +10,13 @@ class PacientesDoctoresPage extends StatefulWidget {
 }
 
 class _PacientesDoctoresPageState extends State<PacientesDoctoresPage> {
+  @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Pacientes/Doctoress'),
         backgroundColor: Colors.red,
       ),
-      drawer: const NavigationDrawerCustom(),
     );
   }
 }

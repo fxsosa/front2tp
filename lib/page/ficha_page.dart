@@ -10,13 +10,13 @@ class FichaPage extends StatefulWidget {
 }
 
 class _FichaPageState extends State<FichaPage> {
+  @override
   Widget build(context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Fichas'),
         backgroundColor: Colors.orange,
       ),
-      drawer: const NavigationDrawerCustom(),
     );
   }
 }
