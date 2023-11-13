@@ -551,4 +551,116 @@ class db {
       );
     }
   }
+
+  // Método para obtener la lista de personas filtradas
+  static Future<List<Persona>> getFilteredPersonas(
+    String nameFilter,
+    String surnameFilter,
+    String personaType,
+  ) async {
+    Database db = await _openDB();
+
+    // Realiza una consulta para obtener todas las personas
+    final List<Map<String, dynamic>> personasMap = await db.query("Personas");
+
+    // Mapea los resultados en objetos Persona
+    return List.generate(
+      personasMap.length,
+      (i) => Persona(
+        idPersona: personasMap[i]['idPersona'],
+        nombre: personasMap[i]['nombre'],
+        apellido: personasMap[i]['apellido'],
+        telefono: personasMap[i]['telefono'],
+        email: personasMap[i]['email'],
+        cedula: personasMap[i]['cedula'],
+        flagEsDoctor: personasMap[i]['flagEsDoctor'] ==
+            1, // Convierte 1 a true y 0 a false
+      ),
+    )
+        // Filtra por nombre
+        .where((element) => element.nombre.contains(nameFilter))
+        // Filtra por apellido
+        .where((element) => element.apellido.contains(surnameFilter))
+        // Filtra por tipo de persona
+        .where((element) {
+      if (personaType == 'all') {
+        return true;
+      } else if (personaType == 'patient') {
+        return !element.flagEsDoctor;
+      } else {
+        return element.flagEsDoctor;
+      }
+    }).toList();
+  }
+
+  // Método para obtener la lista de reservas filtradas
+  static Future<List<Reserva>> obtenerReservasConFiltros(
+    String doctorFilter,
+    String patientFilter,
+  ) async {
+    Database db = await _openDB();
+
+    // Realiza una consulta para obtener todas las reservas
+    final List<Map<String, dynamic>> reservasMap = await db.query("Reservas");
+
+    // Mapea los resultados en objetos Reserva
+    return List.generate(
+      reservasMap.length,
+      (i) => Reserva(
+        idReserva: reservasMap[i]['idReserva'],
+        idPaciente: reservasMap[i]['idPaciente'],
+        idDoctor: reservasMap[i]['idDoctor'],
+        fecha: reservasMap[i]['fecha'],
+        horarioInicio: reservasMap[i]['horario_inicio'],
+        horarioFin: reservasMap[i]['horario_fin'],
+        cancelado: reservasMap[i]['cancelado'] == 1,
+        idCategoria: reservasMap[i]['idCategoria'],
+      ),
+    )
+        // Filtra por nombre del doctor
+        .where((element) {
+      if (doctorFilter.isEmpty) {
+        return true;
+      } else {
+        return  element.idDoctor == getIdPersona(doctorFilter);
+      }
+    })
+        // Filtra por nombre del paciente
+        .where((element) {
+      if (patientFilter.isEmpty) {
+        return true;
+      } else {
+        return element.idPaciente == int.parse(patientFilter);
+      }
+    }).toList();
+  }
+
+  // Método para obtener el id de la persona según su nombre
+  static Future<int> getIdPersona(String nombre) async {
+    Database db = await _openDB();
+
+    // Realiza una consulta para obtener todas las personas
+    final List<Map<String, dynamic>> personasMap = await db.query("Personas");
+
+    // Mapea los resultados en objetos Persona
+    List<Persona> personas = List.generate(
+      personasMap.length,
+      (i) => Persona(
+        idPersona: personasMap[i]['idPersona'],
+        nombre: personasMap[i]['nombre'],
+        apellido: personasMap[i]['apellido'],
+        telefono: personasMap[i]['telefono'],
+        email: personasMap[i]['email'],
+        cedula: personasMap[i]['cedula'],
+        flagEsDoctor: personasMap[i]['flagEsDoctor'] ==
+            1, // Convierte 1 a true y 0 a false
+      ),
+    );
+
+    // Busca la persona con el nombre indicado
+    Persona persona = personas.firstWhere((element) => element.nombre == nombre);
+
+    // Retorna el id de la persona
+    return persona.idPersona;
+  }
 }

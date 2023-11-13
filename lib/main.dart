@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
             },
           );
         }
-        // Aquí puedes manejar otras rutas dinámicas si es necesario
         return null;
       },
     );
