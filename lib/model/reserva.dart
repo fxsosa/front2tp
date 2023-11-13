@@ -6,6 +6,7 @@ class Reserva {
   String horarioInicio;
   String horarioFin;
   bool cancelado;
+  int idCategoria;
 
   Reserva({
     required this.idReserva,
@@ -15,6 +16,7 @@ class Reserva {
     required this.horarioInicio,
     required this.horarioFin,
     this.cancelado = false,
+    required this.idCategoria,
   });
 
   factory Reserva.fromMap(Map<String, dynamic> map) {
@@ -26,6 +28,7 @@ class Reserva {
       horarioInicio: map['horario_inicio'],
       horarioFin: map['horario_fin'],
       cancelado: map['cancelado'] == 1, // Convierte el valor booleano a entero
+      idCategoria: map['idCategoria'],
     );
   }
 
@@ -38,6 +41,7 @@ class Reserva {
       'horario_inicio': horarioInicio,
       'horario_fin': horarioFin,
       'cancelado': cancelado ? 1 : 0, // Convierte el valor booleano a entero
+      'idCategoria': idCategoria,
     };
   }
 }

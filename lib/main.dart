@@ -4,6 +4,9 @@ import 'package:front2tp/page/editar_categoria.dart';
 import 'package:front2tp/page/editar_persona.dart';
 import 'package:front2tp/page/home_page.dart';
 import 'package:front2tp/page/Persona_page.dart';
+import 'package:front2tp/page/editar_reserva.dart';
+import 'package:front2tp/page/reserva_page.dart';
+import 'package:front2tp/model/reserva.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +27,19 @@ class MyApp extends StatelessWidget {
         '/editarCategoria': (context) => EditarCategoria(),
         '/persona': (context) => const PersonaPage(),
         '/editarPersona': (context) => EditarPersona(),
+        '/reserva': (context) => const ReservaPage(), // Ruta para el listado de reservas
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == '/editarReserva') {
+          final Reserva reserva = settings.arguments as Reserva;
+          return MaterialPageRoute(
+            builder: (context) {
+              return EditarReserva(reserva: reserva);
+            },
+          );
+        }
+        // Aquí puedes manejar otras rutas dinámicas si es necesario
+        return null;
       },
     );
   }

@@ -67,7 +67,7 @@ class NavigationDrawerCustom extends StatelessWidget {
             Navigator.pop(context);
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const FichaPage(),
+                builder: (context) =>  FichaClinicaPage(),
               ),
             );
           },

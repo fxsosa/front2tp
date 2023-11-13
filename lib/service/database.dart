@@ -28,12 +28,14 @@ List<String> tableCreationQueries = [
     idReserva INTEGER PRIMARY KEY,
     idPaciente INTEGER,
     idDoctor INTEGER,
+    idCategoria INTEGER,
     fecha DATE NOT NULL,
     horario_inicio TIME NOT NULL,
     horario_fin TIME NOT NULL,
     cancelado BOOLEAN DEFAULT 0,
     FOREIGN KEY (idPaciente) REFERENCES Personas(idPersona),
-    FOREIGN KEY (idDoctor) REFERENCES Personas(idPersona)
+    FOREIGN KEY (idDoctor) REFERENCES Personas(idPersona),
+    FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria)
   );
   ''',
   '''
@@ -149,6 +151,7 @@ class db {
           'horario_inicio': '08:00:00',
           'horario_fin': '09:00:00',
           'cancelado': 0,
+          'idCategoria': 1,
         },
       },
       {
@@ -160,6 +163,7 @@ class db {
           'horario_inicio': '10:00:00',
           'horario_fin': '11:00:00',
           'cancelado': 1,
+          'idCategoria': 1,
         },
       },
       {
@@ -264,7 +268,103 @@ class db {
     }
   }
 
-  static Future<Categoria> getOneByIdPersona(Persona persona) async {
+
+  // getAllByNamePersona
+  static Future<List<Persona>> getAllByNamePersona(String nombre) async {
+    Database db = await _openDB();
+
+    List<Map<String, dynamic>> result = await db
+        .rawQuery('SELECT * FROM Personas WHERE nombre=?', [nombre]);
+
+    if (result.isNotEmpty) {
+      return List.generate(
+        result.length,
+        (i) => Persona(
+          idPersona: result[i]['idPersona'],
+          nombre: result[i]['nombre'],
+          apellido: result[i]['apellido'],
+          telefono: result[i]['telefono'],
+          email: result[i]['email'],
+          cedula: result[i]['cedula'],
+          flagEsDoctor: result[i]['flagEsDoctor'] == 1,
+        ),
+      );
+    } else {
+      throw Exception('Persona no encontrada');
+    }
+  }
+
+  // getAllByNameDoctor
+  static Future<List<Persona>> getAllByNameDoctor(String nombre) async {
+    Database db = await _openDB();
+
+    List<Map<String, dynamic>> result = await db.rawQuery(
+        'SELECT * FROM Personas WHERE nombre=? AND flagEsDoctor=1', [nombre]);
+
+    if (result.isNotEmpty) {
+      return List.generate(
+        result.length,
+        (i) => Persona(
+          idPersona: result[i]['idPersona'],
+          nombre: result[i]['nombre'],
+          apellido: result[i]['apellido'],
+          telefono: result[i]['telefono'],
+          email: result[i]['email'],
+          cedula: result[i]['cedula'],
+          flagEsDoctor: result[i]['flagEsDoctor'] == 1,
+        ),
+      );
+    } else {
+      throw Exception('Doctor no encontrado');
+    }
+  }
+
+  // getAllByNamePaciente
+  static Future<List<Persona>> getAllByNamePaciente(String nombre) async {
+    Database db = await _openDB();
+
+    List<Map<String, dynamic>> result = await db.rawQuery(
+        'SELECT * FROM Personas WHERE nombre=? AND flagEsDoctor=0', [nombre]);
+
+    if (result.isNotEmpty) {
+      return List.generate(
+        result.length,
+        (i) => Persona(
+          idPersona: result[i]['idPersona'],
+          nombre: result[i]['nombre'],
+          apellido: result[i]['apellido'],
+          telefono: result[i]['telefono'],
+          email: result[i]['email'],
+          cedula: result[i]['cedula'],
+          flagEsDoctor: result[i]['flagEsDoctor'] == 1,
+        ),
+      );
+    } else {
+      throw Exception('Paciente no encontrado');
+    }
+  }
+
+  //getAllByNameCategoria
+  static Future<List<Categoria>> getAllByNameCategoria(String nombre) async {
+    Database db = await _openDB();
+
+    List<Map<String, dynamic>> result = await db
+        .rawQuery('SELECT * FROM Categorias WHERE descripcion=?', [nombre]);
+
+    if (result.isNotEmpty) {
+      return List.generate(
+        result.length,
+        (i) => Categoria(
+          idCategoria: result[i]['idCategoria'],
+          descripcion: result[i]['descripcion'],
+        ),
+      );
+    } else {
+      throw Exception('Categoria no encontrada');
+    }
+  }
+
+  static Future<Persona> getOneByIdPersona(Persona persona) async {
     Database db = await _openDB();
     int idPersona = persona.idPersona;
 
@@ -272,9 +372,34 @@ class db {
         .rawQuery('SELECT * FROM Personas WHERE idPersona=?', [idPersona]);
 
     if (result.isNotEmpty) {
-      return Categoria.fromMap(result.first);
+      return Persona.fromMap(result.first);
     } else {
       throw Exception('Persona no encontrada');
+    }
+  }
+
+  static Future<Persona> getOneByIdPersonaDeVerdad(int idPersona) async {
+    Database db = await _openDB();
+    List<Map<String, dynamic>> result = await db
+        .rawQuery('SELECT * FROM Personas WHERE idPersona=?', [idPersona]);
+
+    if (result.isNotEmpty) {
+      return Persona.fromMap(result.first);
+    } else {
+      throw Exception('Persona no encontrada');
+    }
+  }
+
+  static Future<Categoria> getOneByIdCategoriaDeVerdad(int idCategoria) async {
+    Database db = await _openDB();
+
+    List<Map<String, dynamic>> result = await db
+        .rawQuery('SELECT * FROM Categorias WHERE idCategoria=?', [idCategoria]);
+
+    if (result.isNotEmpty) {
+      return Categoria.fromMap(result.first);
+    } else {
+      throw Exception('Categoria no encontrada');
     }
   }
 
@@ -289,6 +414,23 @@ class db {
         (i) => Categoria(
             idCategoria: categoriasMap[i]['idCategoria'],
             descripcion: categoriasMap[i]['descripcion']));
+  }
+
+  static Future<List<FichaClinica>> getAllFichasClinicas() async {
+    Database db = await _openDB();
+    final List<Map<String, dynamic>> fichasClinicasMap =
+        await db.query("FichasClinicas");
+
+    return List.generate(
+        fichasClinicasMap.length,
+        (i) => FichaClinica(
+            idFicha: fichasClinicasMap[i]['idFicha'],
+            idPaciente: fichasClinicasMap[i]['idPaciente'],
+            idDoctor: fichasClinicasMap[i]['idDoctor'],
+            fecha: fichasClinicasMap[i]['fecha'],
+            motivoConsulta: fichasClinicasMap[i]['motivoConsulta'],
+            diagnostico: fichasClinicasMap[i]['diagnostico'],
+            idCategoria: fichasClinicasMap[i]['idCategoria']));
   }
 
   static Future<List<Persona>> getAllPersonas() async {
@@ -311,5 +453,102 @@ class db {
             1, // Convierte 1 a true y 0 a false
       ),
     );
+  }
+
+  // Método para obtener todas las personas que son doctores
+  static Future<List<Persona>> getAllDoctores() async {
+    Database db = await _openDB();
+
+    // Realiza una consulta para obtener todas las personas
+    final List<Map<String, dynamic>> personasMap = await db.query("Personas");
+
+    // Mapea los resultados en objetos Persona
+    return List.generate(
+      personasMap.length,
+      (i) => Persona(
+        idPersona: personasMap[i]['idPersona'],
+        nombre: personasMap[i]['nombre'],
+        apellido: personasMap[i]['apellido'],
+        telefono: personasMap[i]['telefono'],
+        email: personasMap[i]['email'],
+        cedula: personasMap[i]['cedula'],
+        flagEsDoctor: personasMap[i]['flagEsDoctor'] ==
+            1, // Convierte 1 a true y 0 a false
+      ),
+    ).where((element) => element.flagEsDoctor).toList();
+  }
+
+  // Método para obtener todas las personas que no son doctores
+  static Future<List<Persona>> getAllPacientes() async {
+    Database db = await _openDB();
+
+    // Realiza una consulta para obtener todas las personas
+    final List<Map<String, dynamic>> personasMap = await db.query("Personas");
+
+    // Mapea los resultados en objetos Persona
+    return List.generate(
+      personasMap.length,
+      (i) => Persona(
+        idPersona: personasMap[i]['idPersona'],
+        nombre: personasMap[i]['nombre'],
+        apellido: personasMap[i]['apellido'],
+        telefono: personasMap[i]['telefono'],
+        email: personasMap[i]['email'],
+        cedula: personasMap[i]['cedula'],
+        flagEsDoctor: personasMap[i]['flagEsDoctor'] ==
+            1, // Convierte 1 a true y 0 a false
+      ),
+    ).where((element) => !element.flagEsDoctor).toList();
+  }
+
+   // Método para obtener todas las reservas
+  static Future<List<Reserva>> obtenerReservas() async {
+    final Database db = await _openDB();
+    final List<Map<String, dynamic>> maps = await db.query('Reservas');
+
+    return List.generate(maps.length, (i) {
+      return Reserva.fromMap(maps[i]);
+    });
+  }
+
+  // Método para guardar o actualizar una reserva
+  static Future<void> guardarReserva(Reserva reserva) async {
+    final Database db = await _openDB()	;
+    if (reserva.idReserva == 0) {
+      // Si la reserva es nueva (idReserva == 0), la insertamos
+      await db.insert(
+        'Reservas',
+        reserva.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } else {
+      // Si la reserva ya existe, la actualizamos
+      await db.update(
+        'Reservas',
+        reserva.toMap(),
+        where: 'idReserva = ?',
+        whereArgs: [reserva.idReserva],
+      );
+    }
+  }
+
+  static Future<void> guardarFicha(FichaClinica fichaClinica) async {
+    final Database db = await _openDB();
+    if (fichaClinica.idFicha == 0) {
+      // Si la ficha es nueva (idFicha == 0), la insertamos
+      await db.insert(
+        'FichasClinicas',
+        fichaClinica.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } else {
+      // Si la ficha ya existe, la actualizamos
+      await db.update(
+        'FichasClinicas',
+        fichaClinica.toMap(),
+        where: 'idFicha = ?',
+        whereArgs: [fichaClinica.idFicha],
+      );
+    }
   }
 }
